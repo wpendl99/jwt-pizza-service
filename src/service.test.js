@@ -17,13 +17,19 @@ app.get("/error-no-status", (req, res, next) => {
 // Mocking the authRouter and setAuthUser middleware
 jest.mock("./routes/authRouter.js", () => {
     const authRouter = require("express").Router();
-    authRouter.endpoints = [
-        "/api/auth", // authRouter endpoints
-    ];
+    authRouter.endpoints = ["/api/auth"]; // authRouter endpoints
     return {
         authRouter,
         setAuthUser: jest.fn((req, res, next) => {
-            // Mocking the behavior of setAuthUser but with no real user logic
+            // Simulate an error when a specific header is present
+            if (req.headers["x-test-error"] === "true") {
+                const error = new Error("Middleware error");
+                error.statusCode = 500;
+                return next(error);
+            } else if (req.headers["x-test-error-no-status"] === "true") {
+                const error = new Error("Middleware error");
+                return next(error);
+            }
             req.user = null;
             next();
         }),
@@ -91,5 +97,25 @@ describe("Express app", () => {
         const res = await request(app).get("/unknown");
         expect(res.statusCode).toBe(404);
         expect(res.body).toEqual({ message: "unknown endpoint" });
+    });
+
+    it("should handle errors thrown in middleware", async () => {
+        const res = await request(app)
+            .get("/api/docs") // Using an existing route
+            .set("X-Test-Error", "true"); // Trigger error in middleware
+
+        expect(res.statusCode).toBe(500);
+        expect(res.body).toHaveProperty("message", "Middleware error");
+        expect(res.body).toHaveProperty("stack");
+    });
+
+    it("should handle errors thrown in middleware", async () => {
+        const res = await request(app)
+            .get("/api/docs") // Using an existing route
+            .set("X-Test-Error-no-status", "true"); // Trigger error in middleware
+
+        expect(res.statusCode).toBe(500);
+        expect(res.body).toHaveProperty("message", "Middleware error");
+        expect(res.body).toHaveProperty("stack");
     });
 });
