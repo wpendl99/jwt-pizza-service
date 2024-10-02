@@ -1,6 +1,6 @@
 # 🍕 jwt-pizza-service
 
-![Coverage badge](coverageBadge.svg)
+![Coverage badge](https://github.com/wpendl99/jwt-pizza-service/blob/main/coverageBadge.svg)
 
 Backend service for making JWT pizzas. This service tracks users and franchises and orders pizzas. All order requests are passed to the JWT Pizza Factory where the pizzas are made.
 
@@ -12,21 +12,21 @@ In order for the server to work correctly it must be configured by providing a `
 
 ```js
 export default {
-  jwtSecret: 'your-cryptographically-generated-secret-here',
-  db: {
-    connection: {
-      host: 'localhost',
-      user: 'root',
-      password: 'your-secure-database-password-here',
-      database: 'pizza',
-      connectTimeout: 60000,
+    jwtSecret: "your-cryptographically-generated-secret-here",
+    db: {
+        connection: {
+            host: "localhost",
+            user: "root",
+            password: "your-secure-database-password-here",
+            database: "pizza",
+            connectTimeout: 60000,
+        },
+        listPerPage: 10,
     },
-    listPerPage: 10,
-  },
-  factory: {
-    url: 'https://pizza-factory.cs329.click',
-    apiKey: 'your-factory-issued-api-key-here',
-  },
+    factory: {
+        url: "https://pizza-factory.cs329.click",
+        apiKey: "your-factory-issued-api-key-here",
+    },
 };
 ```
 
