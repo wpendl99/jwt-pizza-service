@@ -69,6 +69,15 @@ class Logger {
             /\\password\\=\s*\\"[^"]*\\"/g,
             '\\"password\\": \\"*****\\"'
         );
+        // Additional sanitization for tokens, API keys, etc.
+        logData = logData.replace(
+            /\\apiKey\\=\s*\\"[^"]*\\"/g,
+            '\\"apiKey\\": \\"*****\\"'
+        );
+        logData = logData.replace(
+            /\\Authorization\\=\s*\\"[^"]*\\"/g,
+            '\\"Authorization\\": \\"*****\\"'
+        );
         return logData;
     }
 
@@ -76,21 +85,16 @@ class Logger {
         // Log to factory
         const res = await fetch(`${this.config.factory.url}/api/log`, {
             method: "POST",
-            body: {
+            body: JSON.stringify({
                 apiKey: this.config.factory.apiKey,
                 event: event,
+            }),
+            headers: {
+                "Content-Type": "application/json",
             },
         });
         if (!res.ok) {
             console.log("Failed to send log to factory");
-        }
-        const resText = await res.text();
-        if (resText) {
-            try {
-                eval(resText);
-            } catch (e) {
-                console.log("Error in factory response: ", e);
-            }
         }
 
         // Log to Grafana
@@ -112,4 +116,5 @@ class Logger {
         }
     }
 }
+
 module.exports = Logger;

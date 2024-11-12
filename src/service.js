@@ -5,6 +5,7 @@ const franchiseRouter = require("./routes/franchiseRouter.js");
 const version = require("./version.json");
 const config = require("./config.js");
 const Logger = require("./logger.js");
+const logger = new Logger(config);
 
 const app = express();
 app.use(express.json());
@@ -60,6 +61,6 @@ app.use((err, req, res, next) => {
     next();
 });
 
-app.use(Logger.httpLogger);
+app.use(logger.httpLogger);
 
 module.exports = app;

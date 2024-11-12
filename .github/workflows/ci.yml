@@ -104,6 +104,9 @@ jobs:
                   name: package
                   path: dist/
 
+            - name: Clean up dist directory
+              run: rm -rf dist
+
     deploy:
         runs-on: ubuntu-latest
         permissions:
