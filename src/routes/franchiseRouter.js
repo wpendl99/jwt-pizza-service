@@ -2,7 +2,7 @@ const express = require("express");
 const { DB, Role } = require("../database/database.js");
 const { authRouter } = require("./authRouter.js");
 const { StatusCodeError, asyncHandler } = require("../endpointHelper.js");
-const Logger = require("../logger.js");
+const Logger = require("pizza-logger");
 const config = require("../config.js");
 const logger = new Logger(config);
 
