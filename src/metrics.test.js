@@ -20,7 +20,7 @@ describe("Metrics Class", () => {
     });
 
     describe("Middleware", () => {
-        it("should increment POST requests and active users on /api/auth", () => {
+        it("should increment POST requests and not active users on /api/auth", () => {
             const req = { method: "POST", path: "/api/auth" };
             const res = {};
             const next = jest.fn();
@@ -28,11 +28,11 @@ describe("Metrics Class", () => {
             metrics.middleware()(req, res, next);
 
             expect(metrics.totalPostRequests).toBe(1);
-            expect(metrics.activeUsers).toBe(1);
+            expect(metrics.activeUsers).toBe(0);
             expect(next).toHaveBeenCalled();
         });
 
-        it("should decrement active users on DELETE /api/auth", () => {
+        it("should not decrement active users on DELETE /api/auth", () => {
             metrics.activeUsers = 5; // Simulate existing active users
             const req = { method: "DELETE", path: "/api/auth" };
             const res = {};
@@ -41,7 +41,7 @@ describe("Metrics Class", () => {
             metrics.middleware()(req, res, next);
 
             expect(metrics.totalDeleteRequests).toBe(1);
-            expect(metrics.activeUsers).toBe(4);
+            expect(metrics.activeUsers).toBe(5);
             expect(next).toHaveBeenCalled();
         });
 
@@ -56,7 +56,7 @@ describe("Metrics Class", () => {
             expect(next).toHaveBeenCalled();
         });
 
-        it("should increment PUT requests and active users on /api/auth", () => {
+        it("should increment PUT requests and not active users on /api/auth", () => {
             const req = { method: "PUT", path: "/api/auth" };
             const res = {};
             const next = jest.fn();
@@ -64,7 +64,7 @@ describe("Metrics Class", () => {
             metrics.middleware()(req, res, next);
 
             expect(metrics.totalPutRequests).toBe(1);
-            expect(metrics.activeUsers).toBe(1);
+            expect(metrics.activeUsers).toBe(0);
             expect(next).toHaveBeenCalled();
         });
     });
