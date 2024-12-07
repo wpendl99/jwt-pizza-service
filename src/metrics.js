@@ -35,21 +35,12 @@ class Metrics {
         return (req, res, next) => {
             if (req.method === "POST") {
                 this.incrementRequests("post");
-                if (req.path === "/api/auth") {
-                    this.incrementActiveUsers();
-                }
             } else if (req.method === "PUT") {
                 this.incrementRequests("put");
-                if (req.path === "/api/auth") {
-                    this.incrementActiveUsers();
-                }
             } else if (req.method === "GET") {
                 this.incrementRequests("get");
             } else if (req.method === "DELETE") {
                 this.incrementRequests("delete");
-                if (req.path === "/api/auth") {
-                    this.decrementActiveUsers();
-                }
             }
             next();
         };

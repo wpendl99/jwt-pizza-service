@@ -107,6 +107,7 @@ authRouter.post(
             roles: [{ role: Role.Diner }],
         });
         const auth = await setAuth(user);
+        metrics.incrementActiveUsers();
         logger.factoryLogger(user);
         res.json({ user: user, token: auth });
     })
@@ -119,6 +120,7 @@ authRouter.put(
         const { email, password } = req.body;
         const user = await DB.getUser(email, password);
         const auth = await setAuth(user);
+        metrics.incrementActiveUsers();
         logger.factoryLogger(user);
         res.json({ user: user, token: auth });
     })
@@ -130,6 +132,7 @@ authRouter.delete(
     authRouter.authenticateToken,
     asyncHandler(async (req, res) => {
         clearAuth(req);
+        metrics.decrementActiveUsers();
         res.json({ message: "logout successful" });
     })
 );
