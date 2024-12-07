@@ -192,7 +192,7 @@ class Metrics {
                 if (!response.ok) {
                     console.error("Failed to push metrics data to Grafana");
                 } else {
-                    console.log(`Pushed ${metric}`);
+                    // console.log(`Pushed ${metric}`);
                 }
             })
             .catch((error) => {
