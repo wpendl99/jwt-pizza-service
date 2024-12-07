@@ -5,9 +5,20 @@ const franchiseRouter = require("./routes/franchiseRouter.js");
 const version = require("./version.json");
 const config = require("./config.js");
 const Logger = require("pizza-logger");
+const metrics = require("./metrics");
 const logger = new Logger(config);
 
 const app = express();
+
+app.use((req, res, next) => {
+    const start = Date.now();
+    res.on("finish", () => {
+        const latency = Date.now() - start;
+        metrics.trackLatency(latency);
+    });
+    next();
+});
+
 app.use(express.json());
 app.use(setAuthUser);
 app.use((req, res, next) => {
@@ -20,6 +31,8 @@ app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Credentials", "true");
     next();
 });
+
+app.use(metrics.middleware());
 app.use(logger.httpLogger);
 
 const apiRouter = express.Router();

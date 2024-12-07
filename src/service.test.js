@@ -54,6 +54,16 @@ jest.mock("./config.js", () => ({
     factory: { url: "http://factory.url" },
     db: { connection: { host: "localhost" } },
 }));
+jest.mock("./metrics.js", () => ({
+    middleware: jest.fn(() => (req, res, next) => next()),
+    trackLatency: jest.fn(),
+}));
+jest.mock("pizza-logger", () => {
+    return jest.fn().mockImplementation(() => ({
+        httpLogger: jest.fn((req, res, next) => next()), // Mock the middleware
+        log: jest.fn(), // Mock log function
+    }));
+});
 
 describe("Express app", () => {
     it("should set CORS headers correctly", async () => {
@@ -70,6 +80,7 @@ describe("Express app", () => {
 
     it("should return the correct welcome message and version on GET /", async () => {
         const res = await request(app).get("/");
+        console.log(res);
         expect(res.statusCode).toBe(200);
         expect(res.body).toEqual({
             message: "welcome to JWT Pizza",

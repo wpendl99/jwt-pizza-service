@@ -5,6 +5,7 @@ const { asyncHandler } = require("../endpointHelper.js");
 const { DB, Role } = require("../database/database.js");
 const Logger = require("pizza-logger");
 const logger = new Logger(config);
+const metrics = require("../metrics");
 
 const authRouter = express.Router();
 
@@ -82,8 +83,10 @@ async function setAuthUser(req, res, next) {
 // Authenticate token
 authRouter.authenticateToken = (req, res, next) => {
     if (!req.user) {
+        metrics.incrementFailedAuthentications();
         return res.status(401).send({ message: "unauthorized" });
     }
+    metrics.incrementSuccessfulAuthentications();
     next();
 };
 
