@@ -24,6 +24,8 @@ class Metrics {
         const userTimer = setInterval(() => {
             if (this.activeUsers > 0) {
                 this.activeUsers--;
+            } else if (this.activeUsers < 0) {
+                this.activeUsers = 0;
             }
         }, 300000);
         userTimer.unref();
