@@ -19,6 +19,14 @@ class Metrics {
             this.sendAllMetricsToGrafana();
         }, 10000);
         timer.unref();
+
+        // Timer to log out 1 user every 10 minutes due to inactivity
+        const userTimer = setInterval(() => {
+            if (this.activeUsers > 0) {
+                this.activeUsers--;
+            }
+        }, 300000);
+        userTimer.unref();
     }
 
     middleware() {
